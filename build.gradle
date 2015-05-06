@@ -7,12 +7,6 @@ group = package_group
 archivesBaseName = project_name
 version = "${java_version}-${project_status}-${project_build}"
 
-def gitHash = 'unknown'
-if (new File(projectDir, '.git').exists()) {
-    def repo = Grgit.open(project.file('.'))
-    gitHash = repo.log().find().abbreviatedId
-}
-
 repositories {
 	mavenCentral()
 }
@@ -47,7 +41,6 @@ jar {
             "Created-By": "${System.getProperty('java.vm.version')} + (${System.getProperty('java.vm.vendor')})",
             "Implementation-Title": project.name,
             "Implementation-Version": project.version,
-            "Git-Hash": gitHash
     )
 }
 
