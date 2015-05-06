@@ -1,0 +1,76 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+group = package_group
+archivesBaseName = project_name
+version = "${java_version}-${project_status}-${project_build}"
+
+def gitHash = 'unknown'
+if (new File(projectDir, '.git').exists()) {
+    def repo = Grgit.open(project.file('.'))
+    gitHash = repo.log().find().abbreviatedId
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.2'
+	compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.2'
+}
+
+targetCompatibility=7
+sourceCompatibility=7
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/java'
+        }
+        resources {
+            srcDir 'src/resources'
+        }
+    }
+}
+
+jar {
+	manifest {
+        attributes 'Main-Class': 'com.disconsented.monolithicPackChecker.Main'
+        attributes 'Built-With': 'Gradle v' + project.getGradle().getGradleVersion()
+    }
+    classifier = ''
+    manifest.mainAttributes(
+            "Built-By": "Disconsented",
+            "Created-By": "${System.getProperty('java.vm.version')} + (${System.getProperty('java.vm.vendor')})",
+            "Implementation-Title": project.name,
+            "Implementation-Version": project.version,
+            "Git-Hash": gitHash
+    )
+}
+
+// Source Jar
+task sourceJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
+// Javadoc Jar
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    from javadoc.destinationDir
+    classifier = 'javadoc'
+}
+
+// Deobfuscated Jar
+task deobfJar(type: Jar) {
+    from sourceSets.main.output
+    classifier = 'deobf'
+}
+
+tasks.build.dependsOn sourceJar, javadocJar, deobfJar
+
+tasks.withType(JavaCompile) { task ->
+    task.options.encoding = 'UTF-8'
+}
