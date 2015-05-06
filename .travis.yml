@@ -22,7 +22,8 @@ deploy:
   provider: releases
   api_key:
     secure: KI+Ia5gUxNNfXwXsCE80FbfvdN8LgqVD+4lM85f/Z5Ry92GpihUZVw5ny/iAL6hcqYWiF231pIjWhIpdMQcAZvBmQUNx5PvTf7ReJnSrZiaTA5cowaYHL5fUUyFBQh+9QCyTKVrCGuva71/ROZaLqWwA4aANNkyysd7ourw/SfM=
-  file: "./build/libs/*.jar"
+  file_glob: true
+  file: ./build/libs/*.jar
   on:
     tags: true
     repo: disconsented/MPC
