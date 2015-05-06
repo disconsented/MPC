@@ -33,14 +33,11 @@ import java.util.Arrays;
 public class Main {
 	@SuppressWarnings("serial")
 	private static ArrayList<String> welcome = new ArrayList<String>(){{
-		add("");
-		add("");
-		add("");
-		add("");
-		add("");
-		add("");
-		add("");
-		add("");
+		add("########################################################################################");
+		add("You're using Monolithic Pack Checker (MPC)");
+		add("Created by: Disconsented");
+		add("Github: disconsented/MPC");
+		add("########################################################################################");
 	}};
 	public static void main(String[] args) throws IOException{
 		for (String entry : welcome){
