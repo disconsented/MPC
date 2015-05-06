@@ -22,7 +22,7 @@ sourceCompatibility=7
 sourceSets {
     main {
         java {
-            srcDir 'src/java'
+            srcDir 'src'
         }
         resources {
             srcDir 'src/resources'

@@ -1,6 +1,7 @@
 /*The MIT License (MIT)
 
 Copyright (c) 2015 Disconsented, James Kerr
+Copyright (c) 2015 CanVox
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,25 +21,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
  */
-package java.com.disconsented.monolithicPackChecker;
+package com.disconsented.monolithicPackChecker;
 
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-public class Logging {
-    public static Logger logger = LogManager.getLogger("MPC");
-
-    public static void info(Object info) {
-        logger.info(info);
-    }
-
-    public static void error(Object error) {
-        logger.error(error);
-    }
-    
-    public static void warn(Object warn){
-    	logger.warn(warn);    	
-    }
-
+public class Download {
+	//ToDo
 }
