@@ -2,18 +2,26 @@ apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
+apply plugin: 'com.github.johnrengelman.shadow'
 
 group = package_group
 archivesBaseName = project_name
 version = "${java_version}-${project_status}-${project_build}"
+
+buildscript {
+  repositories { jcenter() }
+  dependencies {
+    classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.1'
+  }
+}
 
 repositories {
 	mavenCentral()
 }
 
 dependencies {
-	compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.2'
-	compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.2'
+  compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.2'
+  compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.2'
 }
 
 targetCompatibility=7
@@ -52,7 +60,6 @@ jar {
             "Implementation-Title": project.name,
             "Implementation-Version": project.version,
     )
-    destinationDir = file 'output'
 }
 
 // Source Jar
