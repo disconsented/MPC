@@ -23,6 +23,7 @@
 *.project
 *.class
 *.txt
+output/
 
 # Specific files
 Thumbs.db

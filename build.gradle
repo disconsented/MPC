@@ -19,6 +19,16 @@ dependencies {
 targetCompatibility=7
 sourceCompatibility=7
 
+//nukes the output dir
+task makePretty(type: Delete) {
+  delete 'output'
+}
+
+//makes clean nuke the output dir.
+clean{
+   dependsOn makePretty
+}
+
 sourceSets {
     main {
         java {
@@ -34,6 +44,7 @@ jar {
 	manifest {
         attributes 'Main-Class': 'com.disconsented.monolithicPackChecker.Main'
         attributes 'Built-With': 'Gradle v' + project.getGradle().getGradleVersion()
+
     }
     classifier = ''
     manifest.mainAttributes(
@@ -42,28 +53,43 @@ jar {
             "Implementation-Title": project.name,
             "Implementation-Version": project.version,
     )
+    destinationDir = file 'output'
 }
 
 // Source Jar
 task sourceJar(type: Jar) {
     from sourceSets.main.allSource
     classifier = 'sources'
+    destinationDir = file 'output'
 }
 
 // Javadoc Jar
 task javadocJar(type: Jar, dependsOn: javadoc) {
     from javadoc.destinationDir
     classifier = 'javadoc'
+    destinationDir = file 'output'
 }
 
 // Deobfuscated Jar
 task deobfJar(type: Jar) {
     from sourceSets.main.output
     classifier = 'deobf'
+    destinationDir = file 'output'
 }
-
-tasks.build.dependsOn sourceJar, javadocJar, deobfJar
 
 tasks.withType(JavaCompile) { task ->
     task.options.encoding = 'UTF-8'
 }
+
+task printDeps {
+doLast { println configurations.compile.collect { it.getName() }  }
+}
+
+task printDependencies {
+    //dumpes what the project was compiled with into a text file.
+    doLast {
+         file("CompiledWith.txt").text = configurations.compile.collect { it.getName() };
+     }
+     mustRunAfter "test"
+}
+tasks.build.dependsOn printDependencies, sourceJar, javadocJar, deobfJar
