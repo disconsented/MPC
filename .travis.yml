@@ -8,7 +8,7 @@ cache:
 sudo: false
 install: true
 script:
- - gradle build --stacktrace
+ - gradle clean shadowJar --stacktrace
 notifications:
   irc:
     channels:
@@ -23,7 +23,7 @@ deploy:
   api_key:
     secure: KI+Ia5gUxNNfXwXsCE80FbfvdN8LgqVD+4lM85f/Z5Ry92GpihUZVw5ny/iAL6hcqYWiF231pIjWhIpdMQcAZvBmQUNx5PvTf7ReJnSrZiaTA5cowaYHL5fUUyFBQh+9QCyTKVrCGuva71/ROZaLqWwA4aANNkyysd7ourw/SfM=
   file_glob: true
-  file: ./output/*.jar
+  file: ./build/libs/*.jar
   on:
     tags: true
     repo: disconsented/MPC
