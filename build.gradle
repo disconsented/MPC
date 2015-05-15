@@ -66,21 +66,18 @@ jar {
 task sourceJar(type: Jar) {
     from sourceSets.main.allSource
     classifier = 'sources'
-    destinationDir = file 'output'
 }
 
 // Javadoc Jar
 task javadocJar(type: Jar, dependsOn: javadoc) {
     from javadoc.destinationDir
     classifier = 'javadoc'
-    destinationDir = file 'output'
 }
 
 // Deobfuscated Jar
 task deobfJar(type: Jar) {
     from sourceSets.main.output
     classifier = 'deobf'
-    destinationDir = file 'output'
 }
 
 tasks.withType(JavaCompile) { task ->
