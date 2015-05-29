@@ -29,6 +29,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
@@ -107,15 +109,13 @@ public class Checks{
 		
 	}
 	
-	@SuppressWarnings("unused")
 	private static boolean canAccessZipFile(ZipFile file){
 		try {
 			Enumeration<? extends ZipEntry> entries = file.entries();
-			
+			ArrayList<ZipEntry> zipEntry = new ArrayList<ZipEntry>();
 			while(entries.hasMoreElements()){
-		        ZipEntry entry = entries.nextElement();
-		        InputStream stream = file.getInputStream(entry);
-		    }
+				zipEntry.add(entries.nextElement());		        
+		    }			
 		} catch (Exception e) {
 			Logging.error("Unable to access ZipFile");
 			Logging.warn("An unhandled exception has occured please report this");
@@ -127,14 +127,14 @@ public class Checks{
 	}
 	
 	private static boolean isValidStructure(ZipFile file){
-		ArrayList<String> topLevelContents = new ArrayList<String>();
+		Set<String> topLevelContents = new HashSet<String>();
 		try {
 			Enumeration<? extends ZipEntry> entries = file.entries();
 			
 			while(entries.hasMoreElements()){
 				String nextElement = entries.nextElement().toString();
-				if((nextElement.endsWith("/") && nextElement.indexOf('/') == nextElement.length()-1) || !nextElement.contains("/")){
-					topLevelContents.add(nextElement);
+				if(nextElement.contains("/")){
+					topLevelContents.add(nextElement.substring(0, nextElement.indexOf("/")+1));
 				}
 		    }
 		} catch (Exception e) {
@@ -143,7 +143,7 @@ public class Checks{
 			return false;
 		}
 		if(topLevelContents.size() == 1){
-			Logging.error("Top level of ZIP only contains + entry");
+			Logging.error("Top level of ZIP only contains" + topLevelContents.toArray()[0]);
 			Logging.error("Expecting: ['mods/', 'bin/', 'config/']");
 			return false;
 		}
