@@ -33,6 +33,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
@@ -50,12 +52,21 @@ public class Checks{
  * 
  * All checks need to report erros if failed
  */
+	
 	@SuppressWarnings("serial")
-	public static ArrayList<String> directories = new ArrayList<String>(){{
+	public static final ArrayList<String> directories = new ArrayList<String>(){{
 		add("bin/");
 		add("config/");
 		add("mods/");
 		}};
+		
+	@SuppressWarnings("serial")
+	public static final ArrayList<String> fileWhitelist = new ArrayList<String>(){{
+		add(".jar");
+		add(".zip");
+	}};
+		
+	private static String mcVersion;
 
 	public static boolean fullZipFileChecks(String fileString) throws IOException{
 		ZipFile file = null;
@@ -63,7 +74,7 @@ public class Checks{
 			file = new ZipFile(new File(fileString));
 		} catch (ZipException e){
 			Logging.error(e.getLocalizedMessage());
-			Logging.info("Maybe fileString is not a real ZIP file? (Caused by a ZIP formatting error");
+			Logging.info("Maybe "+ fileString +" is not a real ZIP file? (Caused by a ZIP formatting error");
 			return false;
 		} catch (IOException e){
 			Logging.error(e.getLocalizedMessage());
@@ -92,6 +103,11 @@ public class Checks{
 		}
 		
 		if(!isForge(file)){
+			file.close();
+			return false;
+		}
+		
+		if(!containsMatchingVersions(file)){
 			file.close();
 			return false;
 		}
@@ -200,10 +216,18 @@ public class Checks{
 			ArrayList<String> modpackEntries = new ArrayList<String>();
 			while(entries.hasMoreElements()){
 				String entry = entries.nextElement().getName();
+				//If the modpack.jar file contains forge universal then it fails the test
 				if (entry.matches("(forge)") && entry.matches(("universal+\\.jar$"))){
 					Logging.error("modpack.jar appears to be Forge Installer not Forge Universal");
 					modpackjar.close();
 					return false;
+				}
+				
+				Pattern forgeVersion = Pattern.compile("-[0-9]+\\.[0-9]+\\.[0-9]+-");
+				Matcher m = forgeVersion.matcher(entry);
+				if(m.find()){
+					mcVersion = m.group().replace("-", "");
+					Logging.info("Modpacks apears to be for Minecraft version " + mcVersion);
 				} 
 				modpackEntries.add(entry);
 		    }
@@ -224,4 +248,53 @@ public class Checks{
 		return true;
 		
 	}
+	
+	private static boolean containsMatchingVersions(ZipFile file){
+		if (mcVersion == null){
+			Logging.error("Minecraft version was not detected; Maybe Forge is not installed correctly? (Report this error)");
+			return false;
+		}
+		try{
+			
+		Enumeration<? extends ZipEntry> entries = file.entries();
+		ArrayList<String> modFiles = new ArrayList<String>();
+		while(entries.hasMoreElements()){
+			ZipEntry next = entries.nextElement();
+			if(!next.isDirectory() && next.getName().contains("mods/")){
+				modFiles.add(next.getName());
+			}
+		}
+		
+		Pattern p = Pattern.compile("\\.[a-z]+$");
+		Matcher m;
+		
+		for(String entry : modFiles){
+			m = p.matcher(entry);
+			if(m.find()){
+				if(!fileWhitelist.contains(m.group())){
+					Logging.error("Unknown file in mods/"+entry);
+					return false;
+				}
+				if(!entry.contains(mcVersion)){
+					Logging.warn(entry+" does NOT appear to be for Minecraft Version " + mcVersion);
+				}				
+				
+			} else {
+				Logging.error("Unknown file in mods/"+entry);
+			}			
+			
+		}
+		Logging.addMiscInfo("Minecraft Version: " + mcVersion);
+		Logging.addMiscInfo("Mod file count: " + modFiles.size());
+		} catch (Exception e){
+			Logging.warn("An unhandled exception has occured please report this");
+			Logging.error(e.getLocalizedMessage());
+			return false;
+		}		
+		Logging.info(file.getName()+" has passed test 6 (file extentions and Minecraft version)");
+		return true;
+		
+	}
+	
+	
 }

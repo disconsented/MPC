@@ -38,7 +38,8 @@ public class Main {
 		add("Created by: Disconsented");
 		add("Github: disconsented/MPC");
 		add("########################################################################################");
-	}};
+	}};	
+	
 	public static void main(String[] args) throws IOException{
 		for (String entry : welcome){
 			System.out.println(entry);
@@ -61,6 +62,7 @@ public class Main {
 			case "-file":
 				if(Checks.fullZipFileChecks(args[1])){
 					Logging.info("All checks completed");
+					Logging.flushMiscInfo();
 				}
 				break;
 			}
@@ -69,6 +71,6 @@ public class Main {
 			Logging.error(args.length+" arguments detected (expected 2)");
 			Logging.error(Arrays.toString(args));
 		}
-	}	
+	}
 
 }

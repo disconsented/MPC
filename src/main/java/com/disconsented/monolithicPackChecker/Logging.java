@@ -23,11 +23,15 @@ THE SOFTWARE.
 package com.disconsented.monolithicPackChecker;
 
 
+import java.util.ArrayList;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class Logging {
     public static Logger logger = LogManager.getLogger("MPC");
+    
+    private static ArrayList<String> miscInfo = new ArrayList<String>();
 
     public static void info(Object info) {
         logger.info(info);
@@ -40,5 +44,16 @@ public class Logging {
     public static void warn(Object warn){
     	logger.warn(warn);    	
     }
+    
+	public static void addMiscInfo(String e){
+		miscInfo.add(e);
+	}
+	
+	public static void flushMiscInfo(){
+		for (String e : miscInfo){
+			info(e);
+		}
+		miscInfo.clear();
+	}
 
 }
