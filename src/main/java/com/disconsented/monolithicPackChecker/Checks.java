@@ -65,7 +65,14 @@ public class Checks{
 		add(".jar");
 		add(".zip");
 	}};
-		
+	
+	public static String[] checkDescriptions = {
+		"binding text to file object",
+		"accessing file",
+		"Top Level Structure",
+		"finding bin/modpack.jar",
+		"modpack.jar is valid Minecraft Forge",
+		"file extentions and Minecraft version"};
 	private static String mcVersion;
 
 	public static boolean fullZipFileChecks(String fileString) throws IOException{
@@ -73,19 +80,20 @@ public class Checks{
 		try{
 			file = new ZipFile(new File(fileString));
 		} catch (ZipException e){
-			Logging.error(e.getLocalizedMessage());
+			
 			Logging.info("Maybe "+ fileString +" is not a real ZIP file? (Caused by a ZIP formatting error");
 			return false;
 		} catch (IOException e){
-			Logging.error(e.getLocalizedMessage());
+			Logging.genericWarning(e);
+						
 			return false;
 		} catch (Exception e){
-			Logging.warn("An unhandled exception has occured please report this");
-			Logging.error(e.getLocalizedMessage());
+			Logging.genericWarning(e);
+			
 			return false;
 		}
 		
-		Logging.info(file.getName()+" has passed test 1 (binding text to file object)");
+		Logging.testPass(1);
 		
 		if(!canAccessZipFile(file)){
 			file.close();
@@ -133,12 +141,11 @@ public class Checks{
 				zipEntry.add(entries.nextElement());		        
 		    }			
 		} catch (Exception e) {
-			Logging.error("Unable to access ZipFile");
-			Logging.warn("An unhandled exception has occured please report this");
-			Logging.error(e.getLocalizedMessage());
+			Logging.genericWarning(e);
+			
 			return false;
 		}		
-		Logging.info(file.getName()+" has passed test 2 (accessing file)");
+		Logging.testPass(2);
 		return true;
 	}
 	
@@ -154,8 +161,7 @@ public class Checks{
 				}
 		    }
 		} catch (Exception e) {
-			Logging.warn("An unhandled exception has occured please report this");
-			Logging.error(e.getLocalizedMessage());
+			Logging.genericWarning(e);			
 			return false;
 		}
 		if(topLevelContents.size() == 1){
@@ -169,6 +175,7 @@ public class Checks{
 				topLevelContents.remove(entry);
 			} else {
 				Logging.error(entry+" has not been found; Ending test");
+				Logging.testFail(3);
 				return false;
 			}
 		} 
@@ -176,7 +183,7 @@ public class Checks{
 			Logging.warn(entry + " is an unknown file/directory. Is this misplaced?");
 		}
 		
-		Logging.info(file.getName()+" has passed test 3 (Top Level Structure)");
+		Logging.testPass(3);
 		return true;
 		
 	}
@@ -186,11 +193,12 @@ public class Checks{
 		
 		while(entries.hasMoreElements()){
 			if(entries.nextElement().getName().equals("bin/modpack.jar")){;
-				Logging.info(file.getName()+" has passed test 4 (bin/modpack.jar was found)");
+			Logging.testPass(4);
 				return true;
 			}
 	    }
 		Logging.error("bin/modpack.jar has not been found; Ending test");
+		Logging.testPass(4);
 		return false;
 	}
 	
@@ -220,6 +228,7 @@ public class Checks{
 				if (entry.matches("(forge)") && entry.matches(("universal+\\.jar$"))){
 					Logging.error("modpack.jar appears to be Forge Installer not Forge Universal");
 					modpackjar.close();
+					Logging.testFail(5);
 					return false;
 				}
 				
@@ -239,12 +248,12 @@ public class Checks{
 			}
 			modpackjar.close();
 		} catch (Exception e) {
-			Logging.warn("An unhandled exception has occured please report this");
-			Logging.error(e.getLocalizedMessage());
+			Logging.genericWarning(e);
+			
 			return false;
 		}
 		
-		Logging.info(file.getName()+" has passed test 5 (modpack.jar appears to be valid Minecraft Forge)");
+		Logging.testPass(5);
 		return true;
 		
 	}
@@ -252,6 +261,7 @@ public class Checks{
 	private static boolean containsMatchingVersions(ZipFile file){
 		if (mcVersion == null){
 			Logging.error("Minecraft version was not detected; Maybe Forge is not installed correctly? (Report this error)");
+			Logging.testFail(6);
 			return false;
 		}
 		try{
@@ -287,11 +297,10 @@ public class Checks{
 		Logging.addMiscInfo("Minecraft Version: " + mcVersion);
 		Logging.addMiscInfo("Mod file count: " + modFiles.size());
 		} catch (Exception e){
-			Logging.warn("An unhandled exception has occured please report this");
-			Logging.error(e.getLocalizedMessage());
+			Logging.genericWarning(e);			
 			return false;
 		}		
-		Logging.info(file.getName()+" has passed test 6 (file extentions and Minecraft version)");
+		Logging.testPass(6);
 		return true;
 		
 	}

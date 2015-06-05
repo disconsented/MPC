@@ -55,5 +55,17 @@ public class Logging {
 		}
 		miscInfo.clear();
 	}
-
+	
+	public static void genericWarning(Exception e){
+		Logging.warn("An unhandled exception has occured please report this");
+		Logging.warn(e.getLocalizedMessage());
+	}
+	
+	public static void testFail(int i){
+		Logging.error("Test "+i+"has failed ("+Checks.checkDescriptions[i-1]+")");
+	}
+	
+	public static void testPass(int i){
+		Logging.info("Test "+i+"has passed ("+Checks.checkDescriptions[i-1]+")");
+	}
 }
