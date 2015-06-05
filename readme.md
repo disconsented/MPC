@@ -3,7 +3,7 @@ A tool that checks TechnicLauncher monolithic .zip packs for issues
 
 # How to use
 MPC is run via command line with the choice of two flags (-file or -download) where the next argument needs to be the file/url
-E.G. java 'jar MPC.jar -file examplemodpack.zip
+E.G. java -jar MPC.jar -file examplemodpack.zip
 
 # Help I have a problem!
 https://github.com/disconsented/ANSSRPG/wiki/How-to-report-a-issue-or-Get-help
