@@ -51,21 +51,14 @@ public class Main {
 		if(args.length == 2){
 			switch(args[0].toLowerCase()){
 			case "-download":
-				Logging.error("Downloading is currently not supported");
+				Download.FileFromUrl(args[1]);
 				break;
-//				if (Checks.isValidURL(args[1])){
-//					
-//				} else {
-//					//Some sort of error message
-//				}
-//				break;
 			case "-file":
-				if(Checks.fullZipFileChecks(args[1])){
-					Logging.info("All checks completed");
-					Logging.flushMiscInfo();
-				}
+				Checks.fullZipFileChecks(args[1]);					
 				break;
 			}
+			Logging.info("All checks completed");
+			Logging.flushMiscInfo();
 		} else {
 			Logging.error("Correct usage: -[download/file] [url/file]");
 			Logging.error(args.length+" arguments detected (expected 2)");

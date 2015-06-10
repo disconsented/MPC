@@ -23,7 +23,52 @@ THE SOFTWARE.
  */
 package com.disconsented.monolithicPackChecker;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 
 public class Download {
-	//ToDo
+	public static void FileFromUrl(String url) {
+		try {
+			URL pack = new URL(url);			
+			String fileName = url.substring(url.lastIndexOf("/")+1, url.length());
+			
+			 InputStream in = new BufferedInputStream(pack.openStream());
+			 ByteArrayOutputStream out = new ByteArrayOutputStream();			 
+			 byte[] buf = new byte[1024];
+			 int n = 0;
+			 int count = 1;
+			 while (-1!=(n=in.read(buf)))
+			 {
+			    out.write(buf, 0, n);			   
+			    if(1000/count == 0){
+			    	Logging.info(out.size()/1024+" KB downloaded");
+			    	count = 1;
+			    } else {
+			    	count++;
+			    }
+			 }
+			 out.close();
+			 in.close();
+			 byte[] response = out.toByteArray();
+
+			 FileOutputStream fos = new FileOutputStream(fileName);
+			 fos.write(response);
+			 fos.close();
+			 Logging.info("A total of " + out.size()/1024 + "KB has been downloaded");
+			 Checks.fullZipFileChecks(fileName);
+		} catch (MalformedURLException e) {
+			Logging.genericWarning(e);			
+		} catch (FileNotFoundException e) {
+			Logging.genericWarning(e);
+		} catch (IOException e) {
+			Logging.genericWarning(e);
+		}
+	}
 }
