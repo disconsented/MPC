@@ -36,7 +36,7 @@ public class Logging {
     public static void info(Object info) {
         logger.info(info);
     }
-
+    
     public static void error(Object error) {
         logger.error(error);
     }
@@ -62,10 +62,10 @@ public class Logging {
 	}
 	
 	public static void testFail(int i){
-		Logging.error("Test "+i+"has failed ("+Checks.checkDescriptions[i-1]+")");
+		Logging.error("Test "+i+" has failed ("+Checks.checkDescriptions[i-1]+")");
 	}
 	
 	public static void testPass(int i){
-		Logging.info("Test "+i+"has passed ("+Checks.checkDescriptions[i-1]+")");
+		Logging.info("Test "+i+" has passed ("+Checks.checkDescriptions[i-1]+")");
 	}
 }
