@@ -1,3 +1,5 @@
+ABONDENED (eventually to be replace with a better utility after an expected technic API change)
+
 # MPC
 A tool that checks TechnicLauncher monolithic .zip packs for issues
 
